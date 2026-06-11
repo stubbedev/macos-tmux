@@ -49,7 +49,9 @@ strip() {
     { if (held) print held; held=$0; blank=($0=="") }
     END { if (held && !skip) print held }
   ' "$rc" > "$tmp"
-  mv "$tmp" "$rc"
+  # Write back in place (cat, not mv) to preserve the rc file's permissions.
+  cat "$tmp" > "$rc"
+  rm -f "$tmp"
   echo "Unwrapped: $rc"
 }
 
