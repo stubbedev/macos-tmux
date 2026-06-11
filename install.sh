@@ -20,7 +20,17 @@ CONF_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/tmux"
 CONF_DST="$CONF_DIR/tmux.conf"
 
 mkdir -p "$CONF_DIR"
-if [ -e "$CONF_DST" ] && [ ! -L "$CONF_DST" ]; then
+if [ -L "$CONF_DST" ]; then
+  # Existing symlink: leave ours alone, but back up one pointing elsewhere.
+  if [ "$(readlink "$CONF_DST")" = "$CONF_SRC" ]; then
+    echo "Already linked: $CONF_DST"
+  else
+    backup="$CONF_DST.bak.$(date +%s)"
+    echo "Backing up foreign symlink $CONF_DST -> $backup"
+    mv "$CONF_DST" "$backup"
+  fi
+elif [ -e "$CONF_DST" ]; then
+  # Existing regular file: back it up.
   backup="$CONF_DST.bak.$(date +%s)"
   echo "Backing up existing $CONF_DST -> $backup"
   mv "$CONF_DST" "$backup"
