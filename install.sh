@@ -53,9 +53,16 @@ if [ "${1:-}" = "--no-wrap" ]; then
   echo "Skipped auto-attach (--no-wrap). Config installed at $CONF_DST."
   echo "Load it manually with: tmux"
 else
-  # Inject into whichever rc files exist (and zsh's by default since it's
-  # this repo's target shell).
-  [ -f "$HOME/.zshrc" ]  && inject "$HOME/.zshrc"  || { [ "${SHELL##*/}" = zsh ] && inject "$HOME/.zshrc"; }
-  [ -f "$HOME/.bashrc" ] && inject "$HOME/.bashrc"
+  wrapped=0
+  # Any existing rc gets wrapped.
+  if [ -f "$HOME/.zshrc" ];  then inject "$HOME/.zshrc";  wrapped=1; fi
+  if [ -f "$HOME/.bashrc" ]; then inject "$HOME/.bashrc"; wrapped=1; fi
+  # If neither exists yet, create the one matching the login shell.
+  if [ "$wrapped" -eq 0 ]; then
+    case "${SHELL##*/}" in
+      bash) inject "$HOME/.bashrc" ;;
+      *)    inject "$HOME/.zshrc"  ;;
+    esac
+  fi
   echo "Done. Open a new terminal (or 'source' your rc) to start using it."
 fi
