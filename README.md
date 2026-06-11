@@ -19,6 +19,16 @@ snippet into `~/.zshrc` and `~/.bashrc` — idempotent, safe to re-run. Pass
 ./install.sh --no-wrap
 ```
 
+## Uninstall
+
+```sh
+./uninstall.sh
+```
+
+Removes the symlink (only if it still points at this repo) and strips the
+auto-attach block from `~/.zshrc` / `~/.bashrc`, restoring them exactly.
+Backups (`*.bak.*`) and running tmux sessions are left alone.
+
 Manual alternatives:
 
 ```sh
