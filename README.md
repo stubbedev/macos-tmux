@@ -7,22 +7,25 @@ copy, and no visible sign you're inside tmux.
 ## Install
 
 ```sh
-ln -sf "$PWD/tmux.conf" ~/.tmux.conf   # or ~/.config/tmux/tmux.conf
+./install.sh
 ```
 
-Or load it ad hoc:
+It symlinks `tmux.conf` to `~/.config/tmux/tmux.conf` (backing up any existing
+file) and asks whether to wrap every new terminal in tmux. Saying yes injects a
+guarded auto-attach snippet into `~/.zshrc` and `~/.bashrc` — idempotent, safe
+to re-run.
+
+Manual alternatives:
 
 ```sh
-tmux -f /path/to/tmux.conf
+ln -sf "$PWD/tmux.conf" ~/.tmux.conf   # just place the config
+tmux -f "$PWD/tmux.conf"               # load it ad hoc
 ```
 
-## Auto-attach in every shell
-
-To make it truly invisible, start (or attach to) a session whenever you open a
-terminal. Add to `~/.zshrc`:
+The auto-attach snippet the installer adds:
 
 ```sh
-if [ -z "$TMUX" ] && [ -n "$PS1" ]; then
+if command -v tmux >/dev/null 2>&1 && [ -z "${TMUX:-}" ] && [ -n "${PS1:-}" ]; then
   tmux attach -t main 2>/dev/null || tmux new -s main
 fi
 ```
