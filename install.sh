@@ -48,18 +48,14 @@ inject() {
   echo "Wrapped: $rc"
 }
 
-printf '\nWrap every new terminal in tmux automatically? [y/N] '
-read -r ans
-case "$ans" in
-  [yY]*)
-    # Inject into whichever rc files exist (and zsh's by default since it's
-    # this repo's target shell).
-    [ -f "$HOME/.zshrc" ]  && inject "$HOME/.zshrc"  || { [ "${SHELL##*/}" = zsh ] && inject "$HOME/.zshrc"; }
-    [ -f "$HOME/.bashrc" ] && inject "$HOME/.bashrc"
-    echo "Done. Open a new terminal (or 'source' your rc) to start using it."
-    ;;
-  *)
-    echo "Skipped auto-attach. Config is still installed at $CONF_DST."
-    echo "Load it manually with: tmux"
-    ;;
-esac
+# Wrap every new terminal automatically — no prompt. Pass --no-wrap to skip.
+if [ "${1:-}" = "--no-wrap" ]; then
+  echo "Skipped auto-attach (--no-wrap). Config installed at $CONF_DST."
+  echo "Load it manually with: tmux"
+else
+  # Inject into whichever rc files exist (and zsh's by default since it's
+  # this repo's target shell).
+  [ -f "$HOME/.zshrc" ]  && inject "$HOME/.zshrc"  || { [ "${SHELL##*/}" = zsh ] && inject "$HOME/.zshrc"; }
+  [ -f "$HOME/.bashrc" ] && inject "$HOME/.bashrc"
+  echo "Done. Open a new terminal (or 'source' your rc) to start using it."
+fi

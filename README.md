@@ -11,9 +11,13 @@ copy, and no visible sign you're inside tmux.
 ```
 
 It symlinks `tmux.conf` to `~/.config/tmux/tmux.conf` (backing up any existing
-file) and asks whether to wrap every new terminal in tmux. Saying yes injects a
-guarded auto-attach snippet into `~/.zshrc` and `~/.bashrc` — idempotent, safe
-to re-run.
+file) and wraps every new terminal in tmux by injecting a guarded auto-attach
+snippet into `~/.zshrc` and `~/.bashrc` — idempotent, safe to re-run. Pass
+`--no-wrap` to install the config only:
+
+```sh
+./install.sh --no-wrap
+```
 
 Manual alternatives:
 
